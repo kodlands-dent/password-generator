@@ -1,15 +1,42 @@
-import random
+import discord, random
+from discord.ext import commands
+
+bot = commands.Bot(intents=discord.Intents.all(), command_prefix='/')
+
+@bot.command('info')
+async def command_infp(ctx:commands.Context):
+    await ctx.send('я демонстрационный бот1')
+
+@bot.command('weather')
+async def command_weather(ctx:commands.Context):
+    await ctx.send('Погода сегодня класс!')
 
 
-sogl = 'qwrtpsdghjklxcvbnm'
-glas = 'eyuioa'
-numbers = '01234567890'
-symbol = '@#%?!'
-password = ""
-for i in range(4):
-    password += random.choice(sogl)
-    password += random.choice(glas)
-for i in range(2):
-    password += random.choice(numbers)
-password += random.choice(symbol)
-print(password)
+@bot.command('plus')
+async def command_plus(ctx:commands.Context, a, b):
+    a = int(a)
+    b= int(b)
+    result = a + b
+    await ctx.send(result)
+
+
+class MyClient(discord.Client):
+    async def on_ready(self):
+        print(f'Logged in as {self.user} (ID: {self.user.id})')
+        print('------')
+
+    async def on_message(self, message):
+        # we do not want the bot to reply to itself
+        if message.author.id == self.user.id:
+            return
+
+        if message.content.startswith('!hello'):
+            await message.reply('Hello!', mention_author=True)
+
+
+intents = discord.Intents.default()
+intents.message_content = True
+
+client = MyClient(intents=intents)
+client.run('token')
+
